@@ -6,14 +6,7 @@ USERNAME=xxx
 PASSWORD=xxx
 
 # Same WAN detection as start.sh
-WAN_DEVICE=vlan2
-vlan2_stat=`ip link show | grep vlan2 | grep -v DOWN`
-if [ -z "$vlan2_stat" ]; then
-	# No VLAN2, WAN is eth0
-	WAN_DEVICE=eth0
-else
-	WAN_DEVICE=vlan2
-fi
+WAN_DEVICE=`nvram get wan_ifname`
 
 killall mentohust
 # Long options (--max-fail) require new version of MentoHUST

@@ -5,14 +5,7 @@
 # Default to vlan2, but this may change when NAT accel is off.
 LAN_DEVICE=br0
 BASE_DIR=/jffs
-WAN_DEVICE=vlan2
-vlan2_stat=`ip link show | grep vlan2 | grep -v DOWN`
-if [ -z "$vlan2_stat" ]; then
-	# No VLAN2, WAN is eth0
-	WAN_DEVICE=eth0
-else
-	WAN_DEVICE=vlan2
-fi
+WAN_DEVICE=`nvram get wan_ifname`
 
 # Sometimes I need to run this script again to restart services
 killall radvd
