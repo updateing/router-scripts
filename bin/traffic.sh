@@ -18,7 +18,7 @@ get_port_rx_bytes() {
     echo `printf %d $RX_HEX`
 }
 
-# No param
+# Parameter: "compact" means output separated by comma
 print_all() {
     for i in `seq 0 5`; do
         TX=$(get_port_tx_bytes $i)
@@ -30,20 +30,26 @@ print_all() {
         else
             PORT_TYPE=Switch
         fi
-        echo Port $i \($PORT_TYPE\): TX \= $TX Bytes, RX \= $RX Bytes
+        if [ "$1" == "compact" ]; then
+            echo $i,$PORT_TYPE,$TX,$RX
+        else
+            echo Port $i \($PORT_TYPE\): TX \= $TX Bytes, RX \= $RX Bytes
+        fi
     done
 }
 
 print_usage() {
-    echo Traffic monitor for BCM5301x switch
-    echo updateing @ GitHub
+    echo "Traffic monitor for BCM5301x switch"
+    echo "updateing @ GitHub"
     echo 
-    echo Usage: \[-t \| -r\] \[PORT_NUM\]
-    echo "   -t Query TX bytes for given port"
-    echo "   -r Query RX bytes for given port"
+    echo "Usage: [-t | -r] [PORT_NUM]"
+    echo "   -t Query TX bytes for given port. PORT_NUM IS needed."
+    echo "   -r Query RX bytes for given port. PORT_NUM IS needed."
+    echo "   -a Query TX and RX bytes for given port, separated by comma. PORT_NUM IS needed."
+    echo "   -c Query TX and RX bytes for all ports, one line each port and separated by comma. PORT_NUM is NOT needed"
     echo "   PORT_NUM should be within 0~8"
     echo
-    echo If no parameter given, traffic of all ports will be printed.
+    echo "If no parameter is given, traffic of all ports will be printed."
 }
 
 if [ -z "$1" ] && [ -z "$2" ]; then
@@ -55,6 +61,18 @@ elif [ -n "$1" ] && [ -n "$2" ]; then
         ;;
     "-r")
         get_port_rx_bytes $2
+        ;;
+    "-a")
+        echo "$(get_port_tx_bytes $2),$(get_port_rx_bytes $2)"
+        ;;
+    *)
+        print_usage
+        ;;
+    esac
+elif [ -n "$1" ]; then
+    case $1 in
+    "-c")
+        print_all compact
         ;;
      *)
         print_usage
