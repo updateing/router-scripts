@@ -5,7 +5,7 @@
 gpio disable 2 # Power White On
 gpio enable 3 # Power Orange Off
 
-$WAN_IFACE=`nvram get wan_ifname`
+WAN_IFACE=`nvram get wan_ifname`
 if [ -z "`ip addr show $WAN_IFACE | grep inet | grep -v inet6`" ]; then
     # We have no IPv4 address on WAN
     gpio disable 8 # WAN Orange On
