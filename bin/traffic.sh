@@ -1,19 +1,20 @@
 #!/bin/sh
 # Traffic monitor from BCM switch
+# Can be used when CTF/FA is enabled
 # Code is taken from https://github.com/RMerl/asuswrt-merlin/blob/2815dfc211f77c3216174510f6d58add3e72d4e4/release/src/router/shared/api-broadcom.c
 # For Netgear R7000
 
 # Parameter: port_num
 get_port_tx_bytes() {
-    PORT_PAGE=`expr $1 + 32` # 32 = 0x20
-    TX_HEX=`et robord $PORT_PAGE 0x00 8`
+    PORT_PAGE=`expr $1 + 32` # 32 = 0x20, MIB_P0_PAGE
+    TX_HEX=`et robord $PORT_PAGE 0x00 8` # 0x00 = MIB_TX_REG
     echo `printf %d $TX_HEX`
 }
 
 # Parameter: port_num
 get_port_rx_bytes() {
     PORT_PAGE=`expr $1 + 32`
-    RX_HEX=`et robord $PORT_PAGE 0x88 8`
+    RX_HEX=`et robord $PORT_PAGE 0x88 8` # 0x88 = MIB_RX_REG
     echo `printf %d $RX_HEX`
 }
 
@@ -25,7 +26,7 @@ print_all() {
         if [ $i == 5 ]; then
             PORT_TYPE=CPU
         elif [ $i == 8 ]; then
-            PORT_TYPE=FA
+            PORT_TYPE=FA # Is this true?
         else
             PORT_TYPE=Switch
         fi
@@ -44,9 +45,6 @@ print_usage() {
     echo
     echo If no parameter given, traffic of all ports will be printed.
 }
-
-TXRX=$1
-PORT=$2
 
 if [ -z "$1" ] && [ -z "$2" ]; then
     print_all
