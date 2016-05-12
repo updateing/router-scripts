@@ -1,0 +1,8 @@
+server_addr: xxx:4443
+trust_host_root_certs: false
+log_format: logfmt
+tunnels:
+  ovpn:
+    remote_port: 1111
+    proto:
+      tcp: 1111
