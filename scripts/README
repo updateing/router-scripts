@@ -1,0 +1,1 @@
+Scripts under this directory will be called by Merlin firmware, based on the event indicated in file names.

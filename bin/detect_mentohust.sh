@@ -2,7 +2,7 @@
 # Scripts run by Tasker on Android and lcd4linux
 # Detects if mentohust is running.
 # If not (same account logged in elsewhere), restart it.
-# -n means dry-run. Just print result and don't restart.
+# Parameter "noexec" means dry-run. Just print result and don't restart.
 
 BASE_DIR=/jffs
 mentohust_process=`ps | grep mentohust | grep "[-]n"` # Confirm there is "-n"

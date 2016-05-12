@@ -1,14 +1,15 @@
 #!/bin/sh
 # Loads lcd4linux
+# -n means do not wait for device probing
 
 BASE_DIR=/jffs
 
 if [ "x$1" != "x-n" ]; then
-	# Wait for driver probing finish
+	# Wait for device probing
 	sleep 15
 fi
 
-# These drivers ccupied the digital frame
+# These drivers access the digital frame exclusively, remove them
 # Only needed in Merlin
 rmmod option
 rmmod usb_wwan
