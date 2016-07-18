@@ -106,3 +106,14 @@ Dnsmasq executable is also wrapped.
 If directory `/jffs/configs/dnsmasq.d` exists, the wrapper will add `--conf-dir=/jffs/configs/dnsmasq.d` automatically to the command line.
 
 Note: the dnsmasq binary in Netgear firmware is terribly trimmed, with nearly no feature (except for DNS) available. The `--conf-dir` is not supported, either. If you want to use this feature, remember to update the binary, otherwise dnsmasq will not start with `/jffs/configs/dnsmasq.d` present.
+
+###Misc info
+
+Each invocation of `acos_service` is logged in `/tmp/acos_service_call_log`. Output of hook scripts will be logged too.
+
+There are some known events you can hook:
+
+1. `acos_service start` (post-hook only, hook name `acos_service_start`): jffs will be ready at this time
+2. `udhcpc bound` (hook name `udhcpc`): IP address obtained for the time time
+3. `udhcpc renew` (hook name `udhcpc`)
+4. `autoconfig_wan_up` (hook name `autoconfig_wan_up`): IPv6 auto-configuration finished
