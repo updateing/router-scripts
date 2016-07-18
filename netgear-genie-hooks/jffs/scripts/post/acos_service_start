@@ -1,0 +1,3 @@
+#!/bin/sh
+/jffs/bin/start.sh
+rmmod ipv6_spi

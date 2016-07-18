@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# udhcpc post-hook
+# restart dnsmasq on WAN connected
+# (jffs will be ready and dnsmasq wrapper will add --conf-dir automatically)
+
+if [ "$1" == "bound" ]; then
+    # Got IP address
+    killall dnsmasq
+    killall dhcp6s
+    dnsmasq -h -n -N -i `nvram get lan_ifname` -r /tmp/resolv.conf -u root
+    # Do not launch these in acos_service_start, otherwise their socket descriptors will go crazy
+    /jffs/bin/radvd -C /jffs/etc/radvd.conf -d 1
+    /jffs/bin/ndppd -c /jffs/etc/ndppd.conf -d
+    /jffs/bin/rdisc6 `nvram get wan_ifname`
+    # Restart dropbear, same as above
+    killall dropbear
+    /hooks/post/acos_service_start
+fi
