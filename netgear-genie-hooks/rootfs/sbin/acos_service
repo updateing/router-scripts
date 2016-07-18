@@ -1,0 +1,58 @@
+#!/bin/sh
+# Wrapper script for acos_service on Netgear routers.
+# Originally by Xiaobao @ Koolshare
+# Modified by updateing
+
+export PATH=/jffs/bin:/jffs/scripts:/usr/bin:/sbin:/bin:/usr/sbin
+export LD_LIBRARY_PATH=/jffs/lib
+
+if [ ! -d /tmp/sbin ]; then
+    mkdir -p /tmp/sbin
+fi
+
+EXE_NAME=`basename $0`
+EXE_PATH=
+
+echo `date` " Calling " $0 $* >> /tmp/acos_service_call_log
+
+if [ "$EXE_NAME" != "/sbin/acos_service" -a "$EXE_NAME" != "acos_service" ]; then
+# If run with another file name, such as `uptime`, `version` etc
+# create a symlink for this name first
+    if [ ! -f /tmp/sbin/$EXE_NAME ]; then
+        ln -sf /usr/sbin/acos_service /tmp/sbin/$EXE_NAME
+    fi
+    EXE_PATH=/tmp/sbin/$EXE_NAME
+else
+    EXE_PATH=/usr/sbin/acos_service
+fi
+
+if [ "$EXE_NAME" == "acos_service" ]; then
+    HOOK_NAME=acos_service_$1
+else
+    HOOK_NAME=$EXE_NAME
+fi
+
+# Internal pre-hooks
+# Does not block calls
+[ -x /hooks/pre/$HOOK_NAME ] && /hooks/pre/$HOOK_NAME $*
+
+# External pre-hooks
+# When precondition exists but fails, do not run the acos_service command.
+# Can be used to block calls
+if [ -x /jffs/scripts/precond/$HOOK_NAME ]; then
+    /jffs/scripts/precond/$HOOK_NAME $* >> /tmp/acos_service_call_log
+    if [ $? -ne 0 ]; then
+        echo `date` " Precondition failed for $0 $* !" >> /tmp/acos_service_call_log
+        exit 0
+    fi
+fi
+
+# Precondition passed, run it
+$EXE_PATH $*
+
+# Internal post-hooks
+[ -x /hooks/post/$HOOK_NAME ] && /hooks/post/$HOOK_NAME $*
+
+# External post-hooks
+[ -x /jffs/scripts/post/$HOOK_NAME ] && /jffs/scripts/post/$HOOK_NAME $* >> /tmp/acos_service_call_log
+

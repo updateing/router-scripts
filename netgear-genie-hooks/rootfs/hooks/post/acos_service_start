@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Internal post-hook for acos_service start
+# Called when the router is ready to establish WAN connection
+# jffs is ready after acos_service start
+
+# Originally by Xiaobao @ Koolshare
+
+export PATH=/jffs/bin:/jffs/scripts:/usr/bin:/sbin:/bin:/usr/sbin
+
+# Start dropbear
+
+ISADD=`cat /etc/passwd | grep admin`
+if [ "$ISADD" == "" ]; then
+    echo "admin:x:0:0:admin:/admin:/usr/bin/login.sh" >> /etc/passwd
+fi
+
+if [ ! -f "/jffs/dropbear/dropbear_rsa_host_key" ]; then
+    mkdir -p /jffs/dropbear
+    dropbearkey -t rsa -s 1024 -f /jffs/dropbear/dropbear_rsa_host_key
+fi
+
+touch /var/log/lastlog 
+touch /var/log/wtmp
+dropbear -r /jffs/dropbear/dropbear_rsa_host_key

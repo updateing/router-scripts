@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$1" == "dnsmasq" ]; then
+    /bin/busybox killall dnsmasq.bin
+else
+    /bin/busybox killall $*
+fi

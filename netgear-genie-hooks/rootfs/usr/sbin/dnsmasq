@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# dnsmasq wrapper
+# append --conf-dir if available
+
+PARAMS=`echo $* | sed 's/[-]u \w*//g'`
+if [ -d /jffs/configs/dnsmasq.d ]; then
+    /usr/sbin/dnsmasq.bin --dhcp-leasefile=/tmp/dnsmasq.leases --conf-dir=/jffs/configs/dnsmasq.d $PARAMS
+else
+    /usr/sbin/dnsmasq.bin --dhcp-leasefile=/tmp/dnsmasq.leases $PARAMS
+fi
