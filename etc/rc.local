@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Try authenticating right after power-up. If that fails, wait for 10min
+# before next try. This is useful when power supply comes up before network
+# services.
+(/usr/bin/detect_minieap.sh; sleep 600; /usr/bin/detect_minieap.sh) &
+exit 0

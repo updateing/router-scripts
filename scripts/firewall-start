@@ -1,4 +1,0 @@
-#!/bin/sh
-# I don't need the IPv6 firewall, clear it manually.
-/jffs/bin/flush_ip6tables.sh
-
