@@ -1,5 +1,7 @@
 #!/bin/sh
 
+##### THIS SCRIPT IS NOW OBSELETE. USE ndsend.sh INSTEAD #####
+
 # The sh_tty switch upstream, coming from RJ Networks,
 # does not perform ND correctly. It relies on DAD to discover
 # link-layer addr for an IPv6 address, and it will "validate" this MAC-IP
